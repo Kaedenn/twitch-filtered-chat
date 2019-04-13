@@ -357,7 +357,7 @@ function add_html(event) {
     let html = (event instanceof TwitchEvent) ? HTMLGen.gen(event) : event;
     let $c = $(this).find('.content');
     let $p = document.createElement('p');
-    $p.setAttribute('class', 'line line-wrapper');
+    $p.attr('class', 'line line-wrapper');
     $p.innerHTML = html;
     $c.append($p);
     $c.scrollTop(2**31-1);
@@ -690,25 +690,25 @@ function client_main() {
 
   /* Entry point: generate for an event (likely TwitchChatEvent) */
   HTMLGen.gen = function _HTMLGen_gen(e) {
-    let e_cont = document.createElement('div');
-    e_cont.setAttribute('class', 'chat-line');
-    e_cont.setAttribute("data-id", e.flags.id);
-    e_cont.setAttribute("data-user", e.user);
-    e_cont.setAttribute("data-user-id", e.flags["user-id"]);
-    e_cont.setAttribute("data-channel", e.channel.channel.lstrip('#'));
+    let e_cont = $('<div></div>');
+    e_cont.attr('class', 'chat-line');
+    e_cont.attr("data-id", e.flags.id);
+    e_cont.attr("data-user", e.user);
+    e_cont.attr("data-user-id", e.flags["user-id"]);
+    e_cont.attr("data-channel", e.channel.channel.lstrip('#'));
     if (!!e.channel.room)
-      e_cont.setAttribute("data-room", e.channel.room);
+      e_cont.attr("data-room", e.channel.room);
     if (!!e.channel.roomuid)
-      e_cont.setAttribute("data-roomuid", e.channel.roomuid);
-    e_cont.setAttribute("data-channelid", e.flags["room-id"]);
-    e_cont.setAttribute("data-subscriber", e.flags.subscriber);
-    e_cont.setAttribute("data-mod", e.flags.mod);
-    e_cont.setAttribute("data-vip", e.isvip ? "1" : "0");
-    e_cont.setAttribute("data-sent-ts", e.flags["tmi-sent-ts"]);
-    e_cont.appendChild(HTMLGen.genBadges(e));
-    e_cont.appendChild(HTMLGen.genName(e));
-    e_cont.innerHTML += ":&nbsp";
-    e_cont.appendChild(HTMLGen.genMsg(e));
+      e_cont.attr("data-roomuid", e.channel.roomuid);
+    e_cont.attr("data-channelid", e.flags["room-id"]);
+    e_cont.attr("data-subscriber", e.flags.subscriber);
+    e_cont.attr("data-mod", e.flags.mod);
+    e_cont.attr("data-vip", e.isvip ? "1" : "0");
+    e_cont.attr("data-sent-ts", e.flags["tmi-sent-ts"]);
+    e_cont.append(HTMLGen.genMsg(e));
+    e_cont.append(HTMLGen.genName(e));
+    e_cont.append(HTMLGen.genBadges(e));
+    e_cont.html(e_cont.html() + ":&nbsp");
     return e_cont.outerHTML;
   };
 
@@ -716,56 +716,56 @@ function client_main() {
   HTMLGen.genName = function _HTMLGen_genName(e) {
     let user = e.flag("display-name");
     if (!user) user = e.user;
-    let e_name = document.createElement('span');
-    e_name.setAttribute('class', 'username');
+    let e_name = $('<span></span>');
+    e_name.attr('class', 'username');
     if (!!e.flags.color) {
-      e_name.setAttribute("style", `color: ${e.flags.color}`);
+      e_name.attr("style", `color: ${e.flags.color}`);
     } else {
-      e_name.setAttribute("style", `color: ${HTMLGen.getColorFor(user)}`);
+      e_name.attr("style", `color: ${HTMLGen.getColorFor(user)}`);
     }
-    e_name.innerHTML = user.escape();
+    e_name.html(e_name.html() + user.escape());
     return e_name;
   };
 
   /* Generate HTML for the message content (see chat_message_html above) */
   HTMLGen.genMsg = function _HTMLGen_genMsg(e) {
-    let e_msg = document.createElement('span');
-    e_msg.setAttribute('class', 'message');
-    e_msg.innerHTML = chat_message_html(e, client);
+    let e_msg = $('<span></span>');
+    e_msg.attr('class', 'message');
+    e_msg.html(chat_message_html(e, client));
     return e_msg;
   };
 
   /* Generate HTML for the user's badges */
   HTMLGen.genBadges = function _HTMLGen_genBadges(e) {
-    let e_badges = document.createElement('span');
-    e_badges.setAttribute('class', 'badges');
+    let e_badges = $('<span></span>');
+    e_badges.attr('class', 'badges');
     if (e.flags.badges) {
       let total_width = 18 * e.flags.badges.length;
-      e_badges.setAttribute("style", `overflow: hidden; width: ${total_width}px; max-width: ${total_width}px`);
+      e_badges.attr("style", `overflow: hidden; width: ${total_width}px; max-width: ${total_width}px`);
       for (let [badge_name, badge_num] of e.flags.badges) {
-        let e_badge = document.createElement('img');
+        let e_badge = $('<img></img>');
         if (client.IsGlobalBadge(badge_name, badge_num)) {
           let badge_info = client.GetGlobalBadge(badge_name, badge_num);
-          e_badge.setAttribute('src', badge_info.image_url_1x);
-          e_badge.setAttribute('tw-badge-scope', 'global');
-          e_badge.setAttribute('alt', badge_info.title);
+          e_badge.attr('src', badge_info.image_url_1x);
+          e_badge.attr('tw-badge-scope', 'global');
+          e_badge.attr('alt', badge_info.title);
         } else if (client.IsChannelBadge(e.channel, badge_name)) {
           let badge_info = client.GetChannelBadge(e.channel, badge_name);
           let badge_src = !!badge_info.alpha ? badge_info.alpha : badge_info.image;
-          e_badge.setAttribute('src', badge_src);
-          e_badge.setAttribute('tw-badge', JSON.stringify(badge_info));
+          e_badge.attr('src', badge_src);
+          e_badge.attr('tw-badge', JSON.stringify(badge_info));
           if (!!e.channel) {
-            e_badge.setAttribute('tw-badge-scope', 'channel');
-            e_badge.setAttribute('tw-badge-channel', e.channel.channel.lstrip('#'));
+            e_badge.attr('tw-badge-scope', 'channel');
+            e_badge.attr('tw-badge-channel', e.channel.channel.lstrip('#'));
           }
         } else {
           console.warn('Unknown badge', badge_name, badge_num, 'for', e);
           continue;
         }
-        e_badge.setAttribute('width', '18px');
-        e_badge.setAttribute('class', 'badge');
-        e_badge.setAttribute('tw-badge-cause', JSON.stringify([badge_name, badge_num]));
-        e_badges.appendChild(e_badge);
+        e_badge.attr('width', '18px');
+        e_badge.attr('class', 'badge');
+        e_badge.attr('tw-badge-cause', JSON.stringify([badge_name, badge_num]));
+        e_badges.append(e_badge);
       }
     }
     return e_badges;
