@@ -755,7 +755,7 @@ function show_context_window(client, cw, line) {
       let dur = $(this).attr('data-duration');
       client.Timeout(ch, u, dur);
       Util.Log('Timed out user', u, 'from', ch, 'for', dur);
-      $(cw).fadeOut();
+      $(cw).hide();
     });
     $tl.append($ta);
   }
@@ -881,7 +881,7 @@ function client_main(layout) {
   /* Clicking the settings button */
   $("#settings_button").click(function() {
     if ($("#settings").is(':visible')) {
-      $('#settings').fadeOut();
+      $('#settings').hide();
     } else {
       let config = get_config_object();
       $("#txtChannel").val(config.Channels.join(","));
@@ -895,7 +895,7 @@ function client_main(layout) {
         $("#txtPassDummy").show();
       }
       $("#selDebug").val(`${config.Debug}`);
-      $('#settings').fadeIn();
+      $('#settings').show();
     }
   });
 
@@ -1063,7 +1063,7 @@ function client_main(layout) {
       }
     } else {
       /* Clicked somewhere else: close context window */
-      $cw.fadeOut();
+      $cw.hide();
     }
   });
 
