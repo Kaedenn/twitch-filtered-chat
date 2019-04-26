@@ -389,10 +389,12 @@ $(document).ready(function() {
   <!-- Populate the page with a one-time script to focus on the chat -->
   <script type="text/javascript" id="txtChatFocus">
   function focus_once() {
-    let $tc = $("#txtChat");
-    if (!$tc.attr("focused")) {
-      $tc.attr("focused", "1");
-      $tc[0].focus();
+    if (document.getElementById('txtChat')) {
+      let $tc = $("#txtChat");
+      if (!$tc.attr("focused")) {
+        $tc.attr("focused", "1");
+        $tc[0].focus();
+      }
     }
   }
   document.addEventListener("tfc-loaded", focus_once);
