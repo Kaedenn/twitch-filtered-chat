@@ -177,7 +177,7 @@ function make_window(id, classname, name) {
   return $(`
 <div id="${id}" class="module ${classname}">
   <div class="header">
-    <div class="menu">
+    <div class="menu" style="display: none;">
       <div></div>
       <div></div>
       <div></div>
@@ -337,7 +337,7 @@ $(document).ready(function() {
     <div id="wrapper-loading" class="loading">Loading Panels...</div>
   </div>
   <!-- Settings -->
-  <div id="settings">
+  <div id="settings" style="display: none;">
     <header>Settings</header>
     <ul>
       <li>
